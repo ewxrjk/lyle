@@ -1,0 +1,26 @@
+* Lyle
+
+** Cropping
+
+Need to test cropping more.
+
+Need a good interface for specifying cropping.
+
+** Faster Linking
+
+If the cached copy is available we should link directly from IMG etc
+to it rather than indirecting via the CGI.
+
+** Icons
+
+Icons should be separate URLs, not built-in, so they can be more
+conveniently changed.
+
+** Cache Filenames
+
+Should be generated from the command, not via a separate process.
+
+Local variables:
+mode:outline
+End:
+# arch-tag:zxaAwTxrwg4pc0VZhvfkvQ

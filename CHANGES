@@ -1,0 +1,101 @@
+* Changes in Lyle 0.9 [FORTHCOMING]
+
+Lyle no longer discards color profiles embedded in JPEGs.  This
+prevented profile-aware browsers such as Safari from correctly display
+on non-sRGB displays.  Non-profile-aware browsers are still stuffed on
+non-sRGB displays (or with non-sRGB images, but you didn't want to put
+those on the web anyway).
+
+* Changes in Lyle 0.8
+
+New @autodirs lets you automatically include directories without
+havign to update configuration file.
+
+* Changes in Lyle 0.7
+
+Renamed to "Lyle" as there is already a program called "Gallery" with
+similar functionality.  The executable scripts are therefore renamed:
+  gallery -> lyle.cgi
+  galleryize -> lyle-refresh
+
+Obviously you don't have to install it under the new name if that's
+inconvenient.
+
+Renamed some variables for greater consistency:
+  $gallery -> $lyleurl
+  $fsroot -> $rootdir
+  $webroot -> $rooturl
+
+* Changes in gallery 0.6
+
+Each image in a thumbnail list gets an anchor, and links to a page
+with that anchor appended.  See css.txt for hints as to how to use
+this most effectively.
+
+New $jpegquality controls JPEG quality.
+
+New %comments array contains HTML comments for each picture.
+
+New "f/..." link gives you jhead output.
+
+* Changes in gallery 0.5
+
+Scaling is now done in terms of separate width/height bounds.
+
+Improved error handling.
+
+** New 'galleryize' program
+
+This program can be used to generate skeleton info.pl files.  See the
+README for more information.
+
+* Changes in gallery 0.4
+
+** New Features
+
+New templating system.  See the README for more details about this.
+
+PNG files are now supported.
+
+** Bugs Fixed
+
+Hyphens are now allowed in filenames.
+
+The cache is regenerated if info.pl changes as well as if the
+directory changes.
+
+* Changes in gallery 0.3
+
+The configuration file is sanity checked at startup.
+
+All image operations are done via the Image::Magick Perl interface,
+rather than invoking the command-line programs.
+
+Various CLASS attributes added to allow for more interesting CSSish
+stuff.  See css.txt.
+
+Thumbnails can be controlled by pixel height as well as scale.
+
+Slightly improved error handling.
+
+Regenerate cached info if directory changes.
+
+* Changes in gallery 0.2
+
+The icons are separate files, not built into the script.
+
+Thumbnails are generated as the thumbnail page is constructed, and the
+IMG URLs point into the cache, rather than requiring another
+invocation of the script.  No locking is performed when generating
+thumbnails.
+
+The 'jpegtran' program is now required.
+
+Various documentation bugs fixed.
+
+------------------------------------------------------------------------
+
+Local Variables:
+mode:text
+End:
+# arch-tag:cT9HxW/0KPAHDCfCNbVZ2w

@@ -1,0 +1,97 @@
+Lyle and CSS
+============
+
+h1.galleryTitle
+	Used on title elements
+	Default:
+		text-align: center
+
+img.galleryIcon
+	Used on elements representing navigation icons
+
+p.galleryIconBar
+	Used on elements containing navigation icons
+	Default:
+		text-align: center
+
+p.galleryDisplay
+	Used on the element containing a (non-thumbnail) image
+	Default:
+		text-align: center
+
+img.galleryDisplay
+	Used on the element representing a (non-thumbnail) image
+
+p.galleryDescription
+	Used on the element containing descriptive text on a thumbnail
+	page
+
+p.galleryThumbnails
+	Used on the element containing all the thumbnails
+
+img.galleryThumbnail
+	Used on each element representing a thumbnail
+
+p.galleryError
+	Used on elements containing error messages.
+
+pre.galleryErrorDetail
+	Used on the element containing detailed error information
+
+p.galleryErrorEnvironment
+	Used on the element containing the environment description
+	Default:
+		display: none
+
+------------------------------------------------------------------------
+
+Scrollable Thumbnails
+=====================
+
+It is possible to attach a scrollable collection of thumbnails to the
+page for each image.  In picture.tmpl break the body up into a pair of
+DIVs, for example:
+
+  <div id=galleryNav>@thumbnails@</div>
+  <div id=galleryDisplay>
+   <h1 class=galleryTitle>@title@</h1>
+   <p class=galleryIconBar>@navigation@</p>
+   <p class=galleryDisplay>@image@</p>
+@include:footer.tmpl@
+  </div>
+
+In the stylesheet, define the properties for these DIVs:
+
+  div#galleryNav {
+          margin: 1em;
+          position: absolute;
+          width: 150px;
+          top: 0;
+          right: auto;
+          left: 0;
+          height: 100%;
+          overflow: auto
+  }
+
+  div#galleryDisplay {
+          position: absolute;
+          width: auto;
+          top: 0;
+          right: 0;
+          left: 180px;
+  }
+
+Adjust the sizes according to how wide your thumbnails are.
+
+This what the anchors on thumbnail links are for: they cause the
+scrollable thumbnail list to be scrolled to the location of the
+selected image automatically.
+
+Suggestions for further improvements are of course welcome!
+
+------------------------------------------------------------------------
+
+Local Variables:
+mode:text
+End:
+# arch-tag:URiNx2o2rfuV6CVppyfxYA
