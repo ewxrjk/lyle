@@ -1,4 +1,4 @@
-LYLE_VERSION=0.8+
+LYLE_VERSION=0.9
 GPL=/usr/share/common-licenses/GPL
 
 prefix=/usr/local

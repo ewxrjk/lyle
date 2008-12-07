@@ -13,7 +13,7 @@ another program with the same name and similar functionality.
 
 It requires:
 
- * Perl (at least 5.6.1, 5.8.2 also works).
+ * Perl (tested with 5.8.8)
 
  * jpegtran (e.g. from Debian package libjpeg-progs).
 
