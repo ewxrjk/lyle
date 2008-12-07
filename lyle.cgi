@@ -637,6 +637,7 @@ sub transform_image($$$$) {
   }
   my $hash = md5_hex($name);
   my $scaled = "$cachedir/$hash.$ext";
+  my $tmp = "$cachedir/tmp$$.$hash.$ext";
   if(!-e $scaled) {
     # possibly take the lock to reduce concurrency (not to
     # *guarantee* serialization)
@@ -648,7 +649,6 @@ sub transform_image($$$$) {
     $image->Crop($crop{$pic}) if exists $crop{$pic};
     $image->Rotate($rotate{$pic}) if exists $rotate{$pic};
     $image->Scale($geo);
-    my $tmp = "$scaled.$$";
     my $output;
     if($ext eq 'jpeg') {
       $output = new IO::File("|jpegtran -copy all -optimize > \Q$tmp\E")
@@ -657,7 +657,8 @@ sub transform_image($$$$) {
       $output = new IO::File($tmp, "w")
 	or error("error opening $tmp: $!");
     }
-    ($e = $image->Write(file => $output)) and error("writing $tmp: $e");
+    ($e = $image->Write(file => $output, filename=>$tmp))
+	and error("writing $tmp: $e");
     $output->close() or error("error closing output (wstat:$?/errno:$!)");
     (rename $tmp, $scaled)
       || error("error renaming $tmp to $scaled: $!");
