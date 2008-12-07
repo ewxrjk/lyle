@@ -1,3 +1,6 @@
+(See 'changelog' or 'bzr log' output for detailed changes, or
+'changelog.arch' for older ones.)
+
 * Changes in Lyle 0.9 [FORTHCOMING]
 
 Lyle no longer discards color profiles embedded in JPEGs.  This
