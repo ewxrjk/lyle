@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #
-# Copyright (C) 2003, 2004, 2005 Richard Kettlewell
+# Copyright (C) 2003, 2004, 2005, 2008 Richard Kettlewell
 # Copyright (C) 2004 Ross Younger
 #
 # This program is free software; you can redistribute it and/or modify
