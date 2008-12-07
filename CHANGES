@@ -6,6 +6,8 @@ on non-sRGB displays.  Non-profile-aware browsers are still stuffed on
 non-sRGB displays (or with non-sRGB images, but you didn't want to put
 those on the web anyway).
 
+Lyle has been updated to work with the Perlmagick from Debian etch.
+
 * Changes in Lyle 0.8
 
 New @autodirs lets you automatically include directories without
