@@ -94,4 +94,3 @@ Suggestions for further improvements are of course welcome!
 Local Variables:
 mode:text
 End:
-# arch-tag:URiNx2o2rfuV6CVppyfxYA

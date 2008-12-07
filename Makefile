@@ -39,5 +39,3 @@ install-lyle:
 	$(INSTALL) -m 644 templates/*.tmpl \
 		$$HOME/public_html/web/photos/stdtemplates/.
 	$(INSTALL) -m 644 images/*.png $$HOME/public_html/web/photos/.
-
-# arch-tag:FYY0XgcGyVMiJ3g8AbiQKw

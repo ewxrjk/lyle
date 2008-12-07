@@ -101,4 +101,3 @@ if(-e "info.pl") {
 	or die "$0: backing up info.pl: $!\n";
 }
 (rename "info.pl.new", "info.pl") or die "$0: info.pl: $!\n";
-# arch-tag:GmoeUv5usbXxoDV/xWosnQ

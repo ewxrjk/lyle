@@ -776,4 +776,3 @@ sub dosubst($$) {
 END {
   (close STDOUT) || die "$0: stdout: $!\n";
 }
-# arch-tag:nmRv1EXyoW12SfuHqLV6cQ
