@@ -409,17 +409,36 @@ sub file_more_recent($$) {
 
 # Compare two filenames, for use by sort
 sub cmpname {
-  if($a =~ /\A(\d+)(.*)/) {
+  return intcompare($a, $b);
+}
+
+sub intcompare {
+  my ($a, $b) = @_;
+
+  # We compare embedded digit strings as decimal integers, so that img10.jpeg
+  # sorts after img2.jpeg rather than before.  We do this by special-casing
+  # pairs that both start with a digit or both start with a nondigit.
+  
+  if($a =~ /\A\d/ and $b =~ /\A\d/) {
+    $a =~ /\A(\d+)(.*)/;
     my ($an, $at) = ($1, $2);
-    if($b =~ /\A(\d+)(.*)/) {
-      my ($bn, $bt) = ($1, $2);
-      if($an < $bn) {
-	return -1;
-      } elsif($an > $bn) {
-	return 1;
-      }
-    }
+    $b =~ /\A(\d+)(.*)/;
+    my ($bn, $bt) = ($1, $2);
+    my $c = $an <=> $bn;
+    return $c if $c;
+    return intcompare($at, $bt);
   }
+
+  if($a =~ /\A\D/ and $b =~ /\A\D/) {
+    $a =~ /\A(\D+)(.*)/;
+    my ($at, $an) = ($1, $2);
+    $b =~ /\A(\D+)(.*)/;
+    my ($bt, $bn) = ($1, $2);
+    my $c = $at cmp $bt;
+    return $c if $c;
+    return intcompare($an, $bn);
+  }
+
   return $a cmp $b;
 }
 
@@ -496,7 +515,8 @@ sub cache_up_to_date($$) {
 # Load the cache.
 sub get_cached_info($) {
   my $dir = shift;
-  my $hash = md5_hex("$rootdir/$dir cache");
+  # CACHE VERSION 2 = new sort order (see cmpname/intcompare)
+  my $hash = md5_hex("[CACHE VERSION 2]$rootdir/$dir cache");
   my $cache ="$cachedir/$hash.cache";
   local $_;
 

@@ -1,6 +1,12 @@
 (See 'changelog' or 'bzr log' output for detailed changes, or
 'changelog.arch' for older ones.)
 
+* Changes in Lyle 0.10
+
+Filenames are now compared with respect to the numeric value of
+embedded integers.  This means that (for instance) where formerly
+10.jpeg would sort before 2.jpeg, now it will sort afterwards.
+
 * Changes in Lyle 0.9
 
 Lyle no longer discards color profiles embedded in JPEGs.  This
