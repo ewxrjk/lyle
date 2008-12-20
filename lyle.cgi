@@ -176,6 +176,7 @@ if(exists $args{'pic'}) {
   my $pagetitle;
   my $template;
   my $comment;
+  my $exif;
   if(exists $args{'display'}) {
     # display one pic
     $template = "picture.tmpl";
@@ -243,7 +244,9 @@ if(exists $args{'pic'}) {
 		       "alt" => ""));
     }
     push(@nav, join("",
-		    tag("a", "href" => exifurl($dir, $pic)),
+		    tag("a", "href" => (exists $args{'exif'}
+					? displayurl($dir, $pic)
+					: exifurl($dir, $pic))),
 		    tag("img", "src" => "$imagesurl/data.png",
 			"class" => "galleryIcon",
 			"border" => 0,
@@ -251,6 +254,11 @@ if(exists $args{'pic'}) {
 			"title" => "EXIF"),
 		    "</a>\n"));
     $comment = $comments{$pic};
+    if(exists $args{'exif'}) {
+      $exif = `jhead \Q$rootdir/$dir/$pic\E`;
+      $exif =~ s/[&<]/sprintf("&#%d;", ord($&))/ge;
+      $exif = "<pre>$exif</pre>";
+    }
   } elsif(exists $args{'exif'}) {
     # dump exif data
     my $pic = $args{'exif'};
@@ -341,6 +349,7 @@ if(exists $args{'pic'}) {
 		  image => join("", @image),
 		  description => $description || '',
 		  comment => $comment || '',
+		  exif => $exif || '',
 		 }));
 }
 
@@ -600,7 +609,8 @@ sub exifurl($$) {
   my ($dir, $pic) = @_;
 
   return galleryurl(dir => $dir,
-		    exif => $pic);
+		    display => $pic,
+		    exif => 'yes') . "#$pic";
 }
 
 # Construct a generic lyle url
