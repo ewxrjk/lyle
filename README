@@ -29,7 +29,7 @@ Version 0.4 has a new templating system; you must install the new
 template files somewhere sensible, edit them according to taste, and
 configure Lyle to find them.  See below for more details.
 
-Version 0.7 changs a lot of names around!  See CHANGES for details.
+Version 0.7 changs a lot of names around!  See CHANGES.html for details.
 
 
 2. How to use it

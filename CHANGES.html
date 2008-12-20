@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+<title>Lyle Change History</title>
+<style type="text/css">
+body {
+  color: black;
+  background-color: white;
+  font-family: times,serif;
+  font-weight: normal;
+  font-size: 12pt;
+  font-variant: normal
+}
+
+body > div, body > div > div {
+  margin-left:1em
+}
+
+h1 {
+  background-color: #e0ffe0;
+  font-family: helvetica,sans-serif;
+  padding: 0.2em
+}
+
+h2 {
+  background-color: #e0ffe0;
+  font-family: helvetica,sans-serif;
+  padding: 0.2em
+}
+
+h3 {
+  background-color: #f0f0f0;
+  font-family: helvetica,sans-serif;
+  padding: 0.2em
+}
+
+h4 {
+  font-family: helvetica,sans-serif
+}
+
+table.bugs {
+  width: 100%
+}
+
+table.bugs th {
+  text-align: left
+}
+
+span.command {
+  font-family: monospace
+}
+</style>
+</head>
+<body>
+<h1>Lyle Change History</h1>
+
+<h2>Changes in Lyle 0.10</h2>
+
+<div>
+
+<p>Filenames are now compared with respect to the numeric value of
+embedded integers.  This means that (for instance) where formerly
+10.jpeg would sort before 2.jpeg, now it will sort afterwards.</p>
+
+</div>
+
+<h2>Changes in Lyle 0.9</h2>
+
+<div>
+
+<p>Lyle no longer
+discards <a href="http://en.wikipedia.org/wiki/Color_management">color
+profiles</a> embedded in JPEGs.  This prevented profile-aware browsers
+such as Safari from correctly display on non-sRGB displays.
+Non-profile-aware browsers are still stuffed on non-sRGB displays (or
+with non-sRGB images, but you didn't want to put those on the web
+anyway).</p>
+
+<p>Lyle has been updated to work with the Perlmagick
+from <a href="http://www.debian.org/releases/etch/">Debian 4.0
+(etch)</a>.</p>
+
+</div>
+
+<h2>Changes in Lyle 0.8</h2>
+
+<div>
+
+<p>New <tt>@autodirs</tt> lets you automatically include directories without
+havign to update configuration file.</p>
+
+</div>
+
+<h2>Changes in Lyle 0.7</h2>
+
+<div>
+
+<p>Renamed to "Lyle" as there is already a program called "Gallery" with
+similar functionality.  The executable scripts are therefore
+  renamed:</p>
+<ul>
+  <li><tt>gallery</tt> -> <tt>lyle.cgi</tt>
+  <li><tt>galleryize</tt> -> <tt>lyle-refresh</tt>
+</ul>
+
+<p>Obviously you don't have to install it under the new name if that's
+inconvenient.</p>
+
+<p>Renamed some variables for greater consistency:</p>
+<ul>
+  <li><tt>$gallery</tt> -> <tt>$lyleurl</tt>
+  <li><tt>$fsroot</tt> -> <tt>$rootdir</tt>
+  <li><tt>$webroot</tt> -> <tt>$rooturl</tt>
+
+</div>
+
+<h2>Changes in gallery 0.6</h2>
+
+<div>
+
+<p>Each image in a thumbnail list gets an anchor, and links to a page
+with that anchor appended.  See <a href="css.txt">css.txt</a> for
+hints as to how to use this most effectively.</p>
+
+<p>New <tt>$jpegquality</tt> controls JPEG quality.</p>
+
+<p>New <tt>%comments</tt> array contains HTML comments for each picture.</p>
+
+<p>New "f/..." link gives you jhead output.</p>
+
+</div>
+
+<h2>Changes in gallery 0.5</h2>
+
+<div>
+
+<p>Scaling is now done in terms of separate width/height bounds.</p>
+
+<p>Improved error handling.</p>
+
+<p>New 'galleryize' program: this program can be used to generate
+skeleton info.pl files.  See the <a href="README">README</a> for more
+information.</p>
+
+</div>
+
+<h2>Changes in gallery 0.4</h2>
+
+<div>
+
+<h3>New Features</h3>
+
+<div>
+
+<p>New templating system.  See the README for more details about this.</p>
+
+<p>PNG files are now supported.</p>
+
+</div>
+
+<h3>Bugs Fixed</h3>
+
+<div>
+
+<p>Hyphens are now allowed in filenames.</p>
+
+<p>The cache is regenerated if <tt>info.pl</tt> changes as well as if the
+directory changes.</p>
+
+</div>
+
+</div>
+
+<h2>Changes in gallery 0.3</h2>
+
+<div>
+
+<p>The configuration file is sanity checked at startup.</p>
+
+<p>All image operations are done via the Image::Magick Perl interface,
+rather than invoking the command-line programs.</p>
+
+<p>Various CLASS attributes added to allow for more interesting CSSish
+stuff.  See <a href="css.txt">css.txt</a>.</p>
+
+<p>Thumbnails can be controlled by pixel height as well as scale.</p>
+
+<p>Slightly improved error handling.</p>
+
+<p>Regenerate cached info if directory changes.</p>
+
+</div>
+
+<h2>Changes in gallery 0.2</h2>
+
+<div>
+
+<p>The icons are separate files, not built into the script.</p>
+
+<p>Thumbnails are generated as the thumbnail page is constructed, and the
+IMG URLs point into the cache, rather than requiring another
+invocation of the script.  No locking is performed when generating
+thumbnails.</p>
+
+<p>The 'jpegtran' program is now required.</p>
+
+<p>Various documentation bugs fixed.</p>
+
+</div>
+
+<hr>
+
+<p>Other sources of change information:</p>
+<ul>
+ <li><a href="http://www.greenend.org.uk/rjk/bzr/lyle.dev.log">bzr
+ changelog for development branch</a>
+ <li><tt>bzr log</tt> in a clone
+ of <a href="http://www.greenend.org.uk/rjk/bzr/lyle.dev">http://www.greenend.org.uk/rjk/bzr/lyle.dev</a>
+ <li><a href="changelog.arch">old Arch Changelog</a> for older
+changes.)
+</ul>
