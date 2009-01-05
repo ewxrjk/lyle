@@ -26,6 +26,7 @@ dist:
 	$(INSTALL) -m 755 lyle.cgi lyle-$(LYLE_VERSION)/lyle.cgi
 	$(INSTALL) -m 755 lyle-refresh lyle-$(LYLE_VERSION)/lyle-refresh
 	$(INSTALL) -m 644 README lyle-$(LYLE_VERSION)/README
+	$(INSTALL) -m 644 README.apache lyle-$(LYLE_VERSION)/README.apache
 	$(INSTALL) -m 644 CHANGES.html lyle-$(LYLE_VERSION)/CHANGES.html
 	$(INSTALL) -m 644 css.txt lyle-$(LYLE_VERSION)/css.txt
 	$(INSTALL) -m 644 $(GPL) lyle-$(LYLE_VERSION)/COPYING

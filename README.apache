@@ -1,0 +1,13 @@
+Things I had to do to make this work with Apache 2.2:
+  - install suexec (Debian package apache2-suexec)
+  - enable mod_suexec (a2enmod suexec)
+  - tell mod_userdir to run cgi scripts
+
+                <Files *.cgi>
+                        Options ExecCGI
+                        SetHandler cgi-script
+                </Files>
+
+Since my base Lyle URL ends 'gallery' and I have a gallery.conf in my
+web pages I also had to disable mod_negotiation, which doesn't stop
+the rewrite but does stop the suexec execution.
