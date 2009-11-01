@@ -150,7 +150,7 @@ if(@unpublished) {
 # Generate the RSS
 my @output = ();
 push(@output, "<?xml version='1.0' encoding='utf-8' ?>\n");
-push(@output, "<rss version='2.0' xmlns:lj='http://www.livejournal.org/rss/lj/1.0/' xmlns:media='http://search.yahoo.com/mrss/' xmlns:atom10='http://www.w3.org/2005/Atom'>\n");
+push(@output, "<rss version='2.0' xmlns:photo='http://www.pheed.com/pheed/'>\n");
 push(@output, "<channel>\n");
 push(@output, "  <title>$title</title>\n");
 push(@output, "  <link>$link</link>\n");
@@ -158,7 +158,6 @@ push(@output, "  <description>$description</description>\n");
 # TODO lastBuildDate
 # TODO generator
 # TODO image
-push(@output, "</channel>\n");
 for my $key (@published) {
     push(@output, "<item>\n");
     # TODO guid/permalink
@@ -170,8 +169,11 @@ for my $key (@published) {
     push(@output, "  <description>", 
          rssquote("<img src=\"", sgmlquote(image_url($key)), "\">"),
          "</description>\n");
+    push(@output, "  <photo:imgsrc>", sgmlquote(image_url($key)), "</photo:imgsrc>\n");
     push(@output, "</item>\n");
 }
+push(@output, "</channel>\n");
+push(@output, "</rss>\n");
 (open(RSS, ">lyle.rss.new")
  and (print RSS @output)
  and (close RSS))
