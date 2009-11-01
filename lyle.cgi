@@ -158,12 +158,12 @@ if(exists $args{'pic'}) {
 				|| $scale < 0.001);
     my $url = transform_image($dir, $pic, $scale, 1);
     output("Location: $url\n\n");
-  } elsif(exists $args{'w'} && exists $args{'h'}) {
+  } elsif(exists $args{'w'} or exists $args{'h'}) {
     my ($w, $h) = ($args{'w'}, $args{'h'});
     invalid("width", $w) if($w !~ /^[0-9]+$/
 			    || $w <= 0 || $w > 2048);
     invalid("height", $h) if($h !~ /^[0-9]+$/
-			     || $h <= 0 || $h > 2048);
+			     || $h < 0 || $h > 2048);
     my $url = transform_image($dir, $pic, [$w, $h], 1);
     output("Location: $url\n\n");
   } else {
@@ -716,6 +716,10 @@ sub size($$$$) {
   ($w, $h) = ($h, $w) if $rotate{$pic};
   # default scale
   if(ref $scale eq 'ARRAY') {
+      # Set a default height
+      if($scale->[1] == 0) {
+          $scale->[1] = $h * $scale->[0] / $w;
+      }
       my $newscale = $scale->[0] / $w;
       ($w, $h) = @$scale;
       $scale = $newscale;

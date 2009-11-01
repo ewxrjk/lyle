@@ -1,0 +1,199 @@
+#! /usr/bin/perl -w
+#
+# Copyright (C) 2009 Richard Kettlewell
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+# USA
+
+use strict;
+use File::Find;
+use File::Basename;
+
+=head1 NAME
+
+lyle-rss - Generate an RSS feed with links into Lyle
+
+=head1 SYNOPSIS
+
+B<lyle-rss> [B<--rescan>]
+
+=head1 DESCRIPTION
+
+This program finds photos managed by Lyle and updates an RSS feed (as
+a static file).
+
+The default behavior is just to update the RSS feed with at least one
+hitherto unpublished photo (if there is one; otherwise there is no
+change).  For instance, this might be run hourly.
+
+With B<--rescan>, the set of available photos is rechecked, to see if
+new ones have turned up.  This might be run daily, or manually after
+adding new photos.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--rescan>
+
+Check for new photos.
+
+=back
+
+=cut
+
+our %caption;                   # From info.pl
+
+our $index = 0;                 # Serial number attached to each photo
+our %photos = ();               # Map of photo to metadata
+our @published = ();            # Currently published photos
+
+my $rescan = 0;                 # --rescan option
+my $max = 50;                   # Maximum photos to publish
+my $title = "Richard's Photos";
+my $link = "http://www.greenend.org.uk/rjk/photos/";
+my $description = "All my photos, in a feed.";
+
+our $base = "http://www.greenend.org.uk/rjk/gallery/photos";
+
+sub sgmlquote {
+    local $_ = join("", @_);
+    s/[&<\"]/sprintf("&#%d;", ord($&))/ge;
+    return $_;
+}
+
+sub rssquote {
+    return sgmlquote(@_);
+}
+
+sub image_url {
+    my $key = shift;
+    my $dir = dirname($key);
+    my $pic = basename($key);
+    return "$base/$dir?pic=$pic&w=600&h=0";
+}
+
+sub page_url {
+    my $key = shift;
+    my $dir = dirname($key);
+    my $pic = basename($key);
+    return "$base/$dir?display=$pic";
+}
+
+# Command line
+while(@ARGV > 0 and $ARGV[0] =~ /^-/) {
+    my $opt = shift;
+
+    if($opt eq '--rescan') { $rescan = 1; }
+    else {
+        die "$0: '$opt' not recognized'\n";
+    }
+}
+die "$0: bad command line args\n" if @ARGV != 0;
+
+# Read in current state
+do "lyle-rss-state.pl" if -e "lyle-rss-state.pl";
+
+if($rescan) {
+    # Get all info.pl files
+    my @infos = `find . -name info.pl`;
+    die if $?;
+    chomp @infos;
+    # Register any new photos.  Picks up changed captions too.
+    for my $info (sort @infos) {
+        my $dir = dirname($info);
+        $dir =~ s,^\./,,;
+        do $info;
+        for my $photo (sort keys %caption) {
+            my $key = "$dir/$photo";
+            $photos{$key} = {index => $index++,
+                             published => 0} unless exists $photos{$key};
+            $photos{$key}->{caption} = $caption{$photo};
+        }
+    }
+}
+
+# Accumulate a list of unpublished photos
+my @unpublished = ();
+for my $key (keys %photos) {
+    next if $photos{$key}->{published};
+    push(@unpublished, $key);
+}
+
+# Sort the list of unpublished photos by detection time
+@unpublished = sort { $photos{$a}->{index} <=> $photos{$b}->{index} } @unpublished;
+
+# If at the max, drop a photo from the end
+while(@published >= $max) {
+    pop(@published);
+}
+
+# Add the oldest unpublished photo to the beginning
+if(@unpublished) {
+    my $new = shift @unpublished;
+    $photos{$new}->{published} = time();
+    unshift(@published, $new);
+}
+
+# Generate the RSS
+my @output = ();
+push(@output, "<?xml version='1.0' encoding='utf-8' ?>\n");
+push(@output, "<rss version='2.0' xmlns:lj='http://www.livejournal.org/rss/lj/1.0/' xmlns:media='http://search.yahoo.com/mrss/' xmlns:atom10='http://www.w3.org/2005/Atom'>\n");
+push(@output, "<channel>\n");
+push(@output, "  <title>$title</title>\n");
+push(@output, "  <link>$link</link>\n");
+push(@output, "  <description>$description</description>\n");
+# TODO lastBuildDate
+# TODO generator
+# TODO image
+push(@output, "</channel>\n");
+for my $key (@published) {
+    push(@output, "<item>\n");
+    # TODO guid/permalink
+    # TODO pubDate
+    push(@output, "  <title>",
+         rssquote(sgmlquote($photos{$key}->{caption})),
+         "</title>\n");
+    push(@output, "  <link>", sgmlquote(page_url($key)), "</link>\n");
+    push(@output, "  <description>", 
+         rssquote("<img src=\"", sgmlquote(image_url($key)), "\">"),
+         "</description>\n");
+    push(@output, "</item>\n");
+}
+(open(RSS, ">lyle.rss.new")
+ and (print RSS @output)
+ and (close RSS))
+    or die "lyle.rss.new: $!\n";
+(rename "lyle.rss.new", "lyle.rss")
+    or die "lyle.rss: $!\n";
+
+# Output updated data
+open(UPDATE, ">lyle-rss-state.new")
+    or die "lyle-rss-state.new: $!\n";
+for my $key (sort keys %photos) {
+    my $metadata = $photos{$key};
+    (print UPDATE "\$photos{'$key'} = {",
+                  join(", ", map("$_=>\"\Q$metadata->{$_}\E\"", 
+                                 keys(%$metadata))), "};\n")
+        or die "lyle-rss-state.new: $!\n";
+}
+(print UPDATE "\$index=$index;\n") or die "lyle-rss-state.new: $!\n";
+(print UPDATE "\@published=(",
+              join(",", map("\"$_\"", @published)), ");\n")
+      or die "lyle-rss-state.new: $!\n";
+(close UPDATE) or die "lyle-rss-state.new: $!\n";
+(rename "lyle-rss-state.new", "lyle-rss-state.pl")
+    or die "lyle-rss-state.pl: $!\n";
+
