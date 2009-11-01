@@ -170,6 +170,7 @@ for my $key (@published) {
          rssquote("<img src=\"", sgmlquote(image_url($key)), "\">"),
          "</description>\n");
     push(@output, "  <photo:imgsrc>", sgmlquote(image_url($key)), "</photo:imgsrc>\n");
+    #push(@output, "  <enclosure url=\"", sgmlquote(image_url($key)), "\" type='image/jpeg' />\n");
     push(@output, "</item>\n");
 }
 push(@output, "</channel>\n");
