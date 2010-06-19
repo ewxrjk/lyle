@@ -31,6 +31,8 @@ B<lyle-rss> [B<--rescan>]
 
 =head1 DESCRIPTION
 
+B<This is a work in progress.>
+
 This program finds photos managed by Lyle and updates an RSS feed (as
 a static file).
 
@@ -50,6 +52,14 @@ adding new photos.
 
 Check for new photos.
 
+=item B<--atom>
+
+Use Atom.  (Currently the default.)
+
+=item B<--rss>
+
+Use RSS.
+
 =back
 
 =cut
@@ -65,6 +75,7 @@ my $max = 50;                   # Maximum photos to publish
 my $title = "Richard's Photos";
 my $link = "http://www.greenend.org.uk/rjk/photos/";
 my $description = "All my photos, in a feed.";
+my $format = "atom";
 
 our $base = "http://www.greenend.org.uk/rjk/gallery/photos";
 
@@ -97,6 +108,8 @@ while(@ARGV > 0 and $ARGV[0] =~ /^-/) {
     my $opt = shift;
 
     if($opt eq '--rescan') { $rescan = 1; }
+    elsif($opt eq '--rss') { $format = "rss"; }
+    elsif($opt eq '--atom') { $format = "atom"; }
     else {
         die "$0: '$opt' not recognized'\n";
     }
@@ -150,31 +163,64 @@ if(@unpublished) {
 # Generate the RSS
 my @output = ();
 push(@output, "<?xml version='1.0' encoding='utf-8' ?>\n");
-push(@output, "<rss version='2.0' xmlns:photo='http://www.pheed.com/pheed/'>\n");
-push(@output, "<channel>\n");
-push(@output, "  <title>$title</title>\n");
-push(@output, "  <link>$link</link>\n");
-push(@output, "  <description>$description</description>\n");
+if($format eq 'rss') {
+    push(@output, "<rss version='2.0' xmlns:photo='http://www.pheed.com/pheed/'>\n");
+    push(@output, "<channel>\n");
+    push(@output, "  <title>$title</title>\n");
+    push(@output, "  <link>$link</link>\n");
+    push(@output, "  <description>$description</description>\n");
+} elsif($format eq 'atom') {
+    push(@output, "<feed xmlns='http://www.w3.org/2005/Atom'>\n");
+    push(@output, "  <title>$title</title>\n");
+    push(@output, "  <link rel='alternate' href=\"$link\" />\n");
+    push(@output, "  <subtitle>$description</subtitle>\n");
+}
 # TODO lastBuildDate
 # TODO generator
 # TODO image
 for my $key (@published) {
-    push(@output, "<item>\n");
-    # TODO guid/permalink
-    # TODO pubDate
-    push(@output, "  <title>",
-         rssquote(sgmlquote($photos{$key}->{caption})),
-         "</title>\n");
-    push(@output, "  <link>", sgmlquote(page_url($key)), "</link>\n");
-    push(@output, "  <description>", 
-         rssquote("<img src=\"", sgmlquote(image_url($key)), "\">"),
-         "</description>\n");
-    push(@output, "  <photo:imgsrc>", sgmlquote(image_url($key)), "</photo:imgsrc>\n");
-    #push(@output, "  <enclosure url=\"", sgmlquote(image_url($key)), "\" type='image/jpeg' />\n");
-    push(@output, "</item>\n");
+    if($format eq 'rss') {
+        push(@output, "<item>\n");
+        # TODO guid/permalink
+        # TODO pubDate
+        push(@output, "  <title>",
+             rssquote(sgmlquote($photos{$key}->{caption})),
+             "</title>\n");
+        push(@output, "  <link>", sgmlquote(page_url($key)), "</link>\n");
+        push(@output, "  <description>", 
+             rssquote("<img src=\"", sgmlquote(image_url($key)), "\">"),
+             "</description>\n");
+        push(@output, "  <photo:imgsrc>", sgmlquote(image_url($key)), "</photo:imgsrc>\n");
+        #push(@output, "  <enclosure url=\"", sgmlquote(image_url($key)), "\" type='image/jpeg' />\n");
+        push(@output, "</item>\n");
+    } elsif($format eq 'atom') {
+        push(@output, "  <entry>\n");
+        push(@output, "    <title>", 
+             sgmlquote($photos{$key}->{caption}),
+             "</title>\n");
+        push(@output, "    <link rel='alternate' type='text/html' href='",
+             sgmlquote(page_url($key)), "' />\n");
+        push(@output, "    <id>",
+             sgmlquote(page_url($key)), "</id>\n");
+        push(@output, "    <content type='html'>",
+             rssquote("<a href='",
+                      sgmlquote(image_url($key)),
+                      "'><img src='",
+                      sgmlquote(image_url($key)),
+                      "'></a>"),
+             "</content>\n");
+        push(@output, "    <link rel='enclosure' type='image/jpeg' href='",
+             sgmlquote(image_url($key)),
+                      "' />\n"),
+        push(@output, "  </entry>\n");
+    }
 }
-push(@output, "</channel>\n");
-push(@output, "</rss>\n");
+if($format eq 'rss') {
+    push(@output, "</channel>\n");
+    push(@output, "</rss>\n");
+} elsif($format eq 'atom') {
+    push(@output, "</feed>\n");
+}
 (open(RSS, ">lyle.rss.new")
  and (print RSS @output)
  and (close RSS))
