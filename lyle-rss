@@ -204,7 +204,7 @@ for my $key (@published) {
              sgmlquote(page_url($key)), "</id>\n");
         push(@output, "    <content type='html'>",
              rssquote("<a href='",
-                      sgmlquote(image_url($key)),
+                      sgmlquote(page_url($key)),
                       "'><img src='",
                       sgmlquote(image_url($key)),
                       "'></a>"),
