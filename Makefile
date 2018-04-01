@@ -11,6 +11,7 @@ MKDIR=mkdir
 all:
 	perl -wc lyle.cgi
 	perl -wc lyle-refresh
+	perl -wc lyle-rss
 
 install:
 	$(MKDIR) -m 755 -p $(bindir)
